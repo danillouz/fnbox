@@ -1,0 +1,24 @@
+{
+  "name": "funbox",
+  "version": "1.0.0",
+  "description": "Function sandbox PoC.",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+	"start": "node src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danillouz/funbox.git"
+  },
+  "keywords": [],
+  "author": "Daniël Illouz <daniel.illouz@me.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/danillouz/funbox/issues"
+  },
+  "homepage": "https://github.com/danillouz/funbox#readme",
+  "engines": {
+    "node": ">=7.6"
+  }
+}
