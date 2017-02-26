@@ -1,8 +1,11 @@
 'use strict';
 
 const vm = require('vm');
+const debug = require('debug');
 
 const SANDBOX_TIMEOUT = 1e3;
+
+const log = debug('funbox:sanbox');
 
 module.exports = function sandbox(fn) {
 	if (typeof fn !== 'string') {
@@ -10,8 +13,6 @@ module.exports = function sandbox(fn) {
 	}
 
 	try {
-		console.time('sandbox');
-
 		const script = new vm.Script(fn);
 
 		const sandbox = {
@@ -28,9 +29,8 @@ module.exports = function sandbox(fn) {
 		const compiledFn = script.runInContext(context, opt);
 		const result = compiledFn();
 
-		console.log('compiledFn: ', compiledFn);
-		console.log('result: ', result);
-		console.timeEnd('sandbox');
+		log('compiledFn: ', compiledFn);
+		log('result: ', result);
 
 		return Promise.resolve(result);
 	} catch (err) {

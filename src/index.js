@@ -2,10 +2,13 @@
 
 const url = require('url');
 const { sir, bodyParser } = require('sirver');
+const debug = require('debug');
 const sandbox = require('./sandbox');
 
 const PORT = 7777;
 const HOST = 'localhost';
+
+const log = debug('funbox:index');
 
 const server = sir(async (req, res) => {
 	try {
@@ -55,6 +58,6 @@ server.listen(
 			console.error('SERVER RUNTIME ERROR: ', err);
 		}
 
-		console.log(`listening on http://${HOST}:${PORT}`);
+		log(`listening on http://${HOST}:${PORT}`);
 	}
 );
