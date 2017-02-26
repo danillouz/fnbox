@@ -15,12 +15,6 @@ const server = sir(async (req, res) => {
 		const { method } = req;
 		const { pathname } = url.parse(req.url);
 
-		if (method === 'GET' && pathname === '/') {
-			return res.json({
-				status: 'ok - /'
-			});
-		}
-
 		if (method === 'POST' && pathname === '/run') {
 			const { fn } = await bodyParser(req);
 
