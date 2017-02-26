@@ -1,9 +1,9 @@
-# F😄nbox
+# FUNB😄X
 Function sandbox PoC.
 
 # Running locally
 ```
-npm start
+npm run dev
 ```
 
 # License

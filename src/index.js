@@ -1,47 +1,60 @@
 'use strict';
 
-const vm = require('vm');
+const url = require('url');
+const { sir, bodyParser } = require('sirver');
+const sandbox = require('./sandbox');
 
-let num = 99;
+const PORT = 7777;
+const HOST = 'localhost';
 
-const fn = `
-	arg => {
-		console.log('runs in sandbox!: ', arg);
-		num = 0;
+const server = sir(async (req, res) => {
+	try {
+		const { method } = req;
+		const { pathname } = url.parse(req.url);
 
-		return new Promise(
-			(resolve, reject) => {
-				setTimeout(
-					() => resolve('success'),
-					4e3
-				);
+		if (method === 'GET' && pathname === '/') {
+			return res.json({
+				status: 'ok - /'
+			});
+		}
+
+		if (method === 'POST' && pathname === '/run') {
+			const { fn } = await bodyParser(req);
+
+			if (!fn) {
+				const error = new Error('Function payload is required');
+
+				error.info = 'For example: `{ "fn": "() => 2 + 2" }`';
+				error.code = 400;
 			}
-		);
-	};
-`;
 
-const script = new vm.Script(fn);
+			const result = await sandbox(fn);
 
-const sandbox = {
-	console,
-	setTimeout
-};
+			return res.json({
+				fn,
+				result
+			});
+		}
 
-const context = new vm.createContext(sandbox);
+		res.status(404).json({
+			error: 'The requested route doesn\'t exist.'
+		});
+	} catch (err) {
+		res.status(err.code || 500).json({
+			error: err.toString(),
+			info: err.info
+		});
+	}
+});
 
-const opt = {
-	timeout: 1e3
-};
+server.listen(
+	PORT,
+	HOST,
+	err => {
+		if (err) {
+			console.error('SERVER RUNTIME ERROR: ', err);
+		}
 
-const compiledFn = script.runInContext(context, opt);
-
-console.log('compiledFn: ', compiledFn);
-
-compiledFn(2)
-	.then(res => {
-		console.log('Promise result: ', res);
-		console.log('num: ', num);
-	})
-	.catch(err => {
-		console.log('Promise error: ', err)
-	});
+		console.log(`listening on http://${HOST}:${PORT}`);
+	}
+);
